@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pytermtables
-Version: 0.0.1
+Version: 0.0.2
 Summary: CSV Tables in the python console
 Home-page: https://github.com/Spacerulerwill/TerminalTables
 Author: William Redding
@@ -12,14 +12,18 @@ Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
 
-# pytables
+# pytermtables
 CSV Tables and Grids in python
 
 This module allows you to create tables via either a CSV file or through python code, export them, sort them and print them via the python console.
 
-Currently, the module is not on pip however you can still place the file in your directory and importing it like so
+Install it via pip:
+```
+pip install pytermtables
+```
+And then import the neccesary items like so:
 ```python
-from pytables import Table, tableToCSV, tableFromCSV
+from pytermtables import Table, tableToCSV, tableFromCSV
 ```
 
 # Creation
@@ -117,7 +121,7 @@ stdDev = table.getStdDev("Score")
 Sort a header by its number data
 ```python
 #descending - optional, defaults to False
-table.sort("Score", descending=False")
+table.sort("Score", descending=False)
 ```
 Shuffle row order
 ```python
