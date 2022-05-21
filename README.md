@@ -7,7 +7,7 @@ Install it via pip:
 ```
 pip install pytermtables
 ```
-
+And then import the neccesary items like so:
 ```python
 from pytermtables import Table, tableToCSV, tableFromCSV
 ```
@@ -107,7 +107,7 @@ stdDev = table.getStdDev("Score")
 Sort a header by its number data
 ```python
 #descending - optional, defaults to False
-table.sort("Score", descending=False")
+table.sort("Score", descending=False)
 ```
 Shuffle row order
 ```python
