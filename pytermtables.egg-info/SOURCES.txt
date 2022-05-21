@@ -1,8 +1,0 @@
-LICENSE.txt
-README.md
-pyproject.toml
-setup.cfg
-pytermtables.egg-info/PKG-INFO
-pytermtables.egg-info/SOURCES.txt
-pytermtables.egg-info/dependency_links.txt
-pytermtables.egg-info/top_level.txt
