@@ -154,24 +154,24 @@ class Table():
     
   #mean of a header's data
   def getMean(self, header) -> float:
-    return mean(self.getHeader(header, excludeNone=True))    
+    return mean([float(x) for x in self.getHeader(header, excludeNone=True) if x != None]) #converts all to floats if not none 
   
   #median of a header's data
   def getMedian(self, header) -> float:
-    return median(self.getHeader(header, excludeNone=True))
+    return median([float(x) for x in self.getHeader(header, excludeNone=True) if x != None]) #converts all to floats if not none
 
   #mode of a header's data
   def getMode(self, header) -> float:
-    return mode(self.getHeader(header, excludeNone=True))
+    return mode([float(x) for x in self.getHeader(header, excludeNone=True) if x != None]) #converts all to floats if not none
 
   #range of a header's data
   def getRange(self, header) -> float:
-    data = self.getHeader(header, excludeNone=True)
+    data = [float(x) for x in self.getHeader(header, excludeNone=True) if x != None] #converts all to floats if not none
     return max(data) - min(data)
 
   #standard deviation of a header's data
   def getStdDev(self, header) -> float:
-    return pstdev(self.getHeader(header, excludeNone=True))
+    return pstdev([float(x) for x in self.getHeader(header, excludeNone=True) if x != None]) #converts all to floats if not none
 
 #create a table from a csv file
 #filePath - path of file
