@@ -194,6 +194,7 @@ def tableFromCSV(filePath:str, titleRow:bool=True, delimiter:str=",", quotechar:
     #read csv
     p = csv.reader(csvfile, delimiter=delimiter, quotechar=quotechar, skipinitialspace=True, dialect="excel")
     rows = list(p)
+
     longestRow = max(rows, key=len)
     
     #set header titles
@@ -209,6 +210,7 @@ def tableFromCSV(filePath:str, titleRow:bool=True, delimiter:str=",", quotechar:
       row = rows[i]
       rowToAdd = {}
       for count, elem in enumerate(row):
+        elem = elem.strip()
         if elem == "":
           elem = None
         rowToAdd[table.headers[count]] = elem
@@ -241,3 +243,6 @@ def tableToCSV(filePath:str, table:Table, titleRow:bool = True, delimiter:str=",
     for row in table.rows:
       elems = [row[header] for header in table.headers]
       writer.writerow(elems)
+
+table = tableFromCSV(filePath="homes.csv", titleRow=True)
+table.prettyPrint()
