@@ -243,6 +243,3 @@ def tableToCSV(filePath:str, table:Table, titleRow:bool = True, delimiter:str=",
     for row in table.rows:
       elems = [row[header] for header in table.headers]
       writer.writerow(elems)
-
-table = tableFromCSV(filePath="homes.csv", titleRow=True)
-table.prettyPrint()
