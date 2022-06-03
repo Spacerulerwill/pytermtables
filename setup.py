@@ -3,7 +3,7 @@ from setuptools import setup
 classifiers = [
   'Development Status :: 5 - Production/Stable',
   'Operating System :: Microsoft :: Windows :: Windows 10',
-  'License :: OSI Approved :: zLib License',
+  'License :: OSI Approved :: zlib/libpng License',
   'Programming Language :: Python :: 3'
 ]
  
@@ -16,7 +16,7 @@ setup(
   url='https://github.com/Spacerulerwill/pytermtables',  
   author='William Redding',
   author_email='williamdredding@gmail.com',
-  license='zLib', 
+  license='zlib/libpng', 
   classifiers=classifiers,
   keywords='csv', 
   packages=["pytermtables"],
