@@ -9,7 +9,7 @@ classifiers = [
  
 setup(
   name='pytermtables',
-  version='1.0.3',
+  version='1.0.31',
   description='CSV Python tables in terminal',
   long_description=open('README.md').read(),
   long_description_content_type='text/markdown',
