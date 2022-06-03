@@ -1,1 +1,1 @@
-from .pytermtables import printGrid, Table, tableFromCSV, tableToCSV
+from .pytermtables import gridToString, Table, tableFromCSV, tableToCSV

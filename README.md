@@ -9,114 +9,154 @@ pip install pytermtables
 ```
 And then import the neccesary items like so:
 ```python
-from pytermtables import Table, tableToCSV, tableFromCSV
+from pytermtables import gridToString, Table, tableToCSV, tableFromCSV
 ```
 
 # Creation
-You can create a table in 2 ways:
-```python
-#table class
-#headers - the headers for each table section
-#rows - optional - add rows from intialisation, can be removed, edited or added at any time after
-table = Table(headers=["Name", "Score"], rows=[{"Name": "Bob", "Score": 80}])
-```
-You can also create a table via a CSV file
 
+Create Table via class
 ```python
-#filePath - path of file
-#titleRow - whether CSV contains a row with headers - defaults to True
-#deliminter - the char used for seperations - defaults to ,
-#quotechar - the char used for quotes - defaults to "
-table = tableFromCSV(filePath="scores.csv", titleRow=True, delimiter=",", quotechar='"')
+"""
+headers - the title of the headers - list
+rows - optional - add rows from initialisation - list
+"""
+table = Table(headers=["Name", "Score"], rows=[
+{"Name": "Will", "Score": 99},
+{"Name": "Joe", "Score": 111},
+{"Name": "John", "Score": 2},
+{"Name": "Bob", "Score": 59}
+])
 ```
 
-and turn an existing table into a CSV
-
+Create Table via CSV file
 ```python
-#filePath - path of file
-#titleRow - whether CSV contains a row with headers - defaults to True
-#deliminter - the char used for seperations - defaults to ,
-#quotechar - the char used for quotes - defaults to "
-tableToCSV(filePath="output.csv", table=table, titleRow=True, delimiter=",", quotechar='"')
+"""
+filepath - location of csv file - str
+titleRow - whether the csv has a title row or not - bool
+delimter - seperation char - str
+quotechar - quote used for qoutation marks - str
+"""
+table2 = tableFromCSV(filePath="sampledata.csv", titleRow=False, delimiter=',', quotechar='"')
 ```
 
-# Editing rows
+# Printing
 
-Adding a row:
 ```python
-#creating a row for table
-#row - the data for the row - dictionary
-#returns the copy of thre created row
-table.addRow({"Name": "Joe", "Score": 100"})
+#pretty simple
+print(table)
 ```
 
-Getting rows:
+# Headers
+
+Add a header
 ```python
-#find every row that contains subdict
-#dict - the subdict to check if is contained
-#returns a list
-table.getRows({"Name": "Joe"})
-```
+"""
+headerName - name of header to create - str
+data - values for header - list
+"""
+table.addHeader("Date", ["1/1/1970", "2/12/2008"])
 
-Editing a row
-```python
-#uses get rows and then you pick one with an index to change one of its values
-table.getRows({"Name": "Joe"})[0]["Score"] = 10000
-```
-
-Deleting a row
-```python
-#remove every row that contains subdict
-#subdict - the subdict to check if is contained
-tables.
-table.removeRows({"Name": "Joe"})
-```
-
-# Editing Headers
-
-Getting all values from a header:
-```python
-#header - title of header to use
-#excludeNone - whether to exlucde None values when getting data
-data = table.getHeader("Score", excludeNone=True)
-```
-
-Create new header
-```python
-table.addHeader("Testing")
-
+#OR
+table["Date"] = ["1/1/1970", "2/12/2008"]
 ```
 
 Remove a header
 ```python
-table.removeHeader("Testing")
+"""
+Remove header by its name
+headerName - header to remove
+"""
+table.removeHeader("Date")
+
+#OR
+del table["Date"]
 ```
 
-# Statistcal Functions
-
-Mean, Mode, Median, Range, Standard Deviation of data in a header
+Get a header's data
 ```python
-mean = table.getMean("Score")
-mode = table.getMode("Score")
-median = table.getMedian("Score")
-range = table.getRange("Score")
-stdDev = table.getStdDev("Score")
+"""
+Get all data from a header
+header - title of header
+excludeNone - whether to exclude None values when getting data
+returns list
+"""
+data = table.getHeader("Score", excludeNone=True)
+
+#OR
+data = table["Score"]
 ```
 
-# Sorting data
-Sort a header by its number data
+# Rows
+
+Add a row
 ```python
-#descending - optional, defaults to False
+"""
+Creating a row for a table
+row - the data for the row - dict
+returns a copy of the row created
+"""
+table.addRow({"Name": "Steve", "Score": 999})
+```
+
+Remove rows
+```python
+"""
+remove every row that contains subdict
+subdict - the subdict to check against - dict
+"""
+table.removeRows({"Name": "Will"})
+```
+
+Get rows
+```python
+"""
+Find every row that contains subdict
+subdict - the subdict to check against - dict
+returns a list
+"""
+row = table.getRows({"Name": "Will"})[0]
+```
+
+# Statistical Functions
+
+```python
+mean = table.getMean("Score") #mean
+mode = table.getMode("Score") #mode
+median = table.getMedian("Score") #median
+range = table.getRange("Score") #range
+stdDev = table.getStdDev("Score") #standard deviation
+percentile = table.percentile("Score", 15) #nth percentile (15)
+IQR = table.getIQR("Score") #interquartile range
+```
+
+# Save as CSV
+
+```python
+"""
+Convert a table to a CSV file
+filePath - path of file to create - str
+table - table to convert - Table
+titleRow - whether the table contains a titleRow - bool
+delimiter - csv seperator character - str
+qoutechar - char used for quotes - str
+"""
+tableToCSV(filePath="output.csv", table, titleRow=True, delimiter=',', quotechar='"')
+```
+
+# Sorting and Shuffling
+
+Sorting Header
+```python
+"""
+Sort rows by value
+header - the key of the dictionary used to sort by
+#descending - whether it should be sorted in ascending or descending order
+"""
 table.sort("Score", descending=False)
 ```
-Shuffle row order
+
+Shuffling Header
 ```python
-table.shuffle()
+#easy
+table.shuffle("Score")
 ```
-
-# Printing to console
-```python
-table.prettyPrint()
-```
-
-
