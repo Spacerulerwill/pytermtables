@@ -1,10 +1,7 @@
-from ast import Index, excepthandler
 from random import shuffle as listshuffle
 from statistics import mean, median, mode, pstdev
 import csv
 from math import ceil
-
-from requests import head
 
 def gridToString(arr, hPadding:int=1, cChar:str="+", hChar:str= "-", vChar:str="|", titleRow:bool = False, trChar:str = "=") -> str:
   """
@@ -376,3 +373,14 @@ def tableToCSV(filePath:str, table:Table, titleRow:bool = True, delimiter:str=",
     for row in table._rows:
       elems = [row[header] for header in table._headers]
       writer.writerow(elems)
+
+if __name__ == "__main__":
+  import random
+  import string
+
+  table = Table(headers=["Name", "Score"])
+
+  for i in range(100):
+    table.addRow({"Name": ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8)), "Score": random.randint(0, 100)})
+
+  tableToCSV("output.csv", table)
