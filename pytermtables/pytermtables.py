@@ -1,80 +1,108 @@
+from email.header import Header
 from random import shuffle as listshuffle
 from statistics import mean, median, mode, pstdev
 import csv
 from math import ceil
 
 def gridToString(arr, hPadding:int=1, cChar:str="+", hChar:str= "-", vChar:str="|", titleRow:bool = False, trChar:str = "=") -> str:
-  """
-  Convert a 2d array 'grid' to a string and return the string\n
-  arr - 2d array to convert\n
-  hPadding - the horizontal padding between data and the column lines\n
-  cChar - the character used for corners in the grid - str\n
-  hChar - the character used for horizontal - str\n
-  vChar - the character used for vertical seperations - str\n
-  titleRow - if true - seperator top row from rows beneath (like using a table)\n
-  trChar - the char used for the title row seperator\n
-  """
+    """
+    Convert a 2d array 'grid' to a string and return the string\n
+    arr - 2d array to convert\n
+    hPadding - the horizontal padding between data and the column lines\n
+    cChar - the character used for corners in the grid - str\n
+    hChar - the character used for horizontal - str\n
+    vChar - the character used for vertical seperations - str\n
+    titleRow - if true - seperator top row from rows beneath (like using a table)\n
+    trChar - the char used for the title row seperator\n
+    """
 
-  #check that variables are usable and of correct format
-  if not isinstance(titleRow, bool): raise Exception("titleRow must be either true or false")
-  if len(arr) == 0: raise Exception("List cannot be empty")
-  if not isinstance(hPadding, int): raise Exception("hPadding must be a positive integer!")
-  if hPadding < 0: raise Exception("hPadding must be a positive integer")
-  if not isinstance(cChar, str): raise Exception("cChar must be a string!")
-  if not isinstance(hChar, str): raise Exception("hChar must be a string!")
-  if not isinstance(vChar, str): raise Exception("vChar must be a string!")
-  if not isinstance(trChar, str): raise Exception("trChar must be a string!")
-  if len(cChar) != 1: raise Exception("cChar must be a string of length 1")
-  if len(hChar) != 1: raise Exception("hChar must be a string of length 1")
-  if len(vChar) != 1: raise Exception("vChar must be a string of length 1") 
-  if len(trChar) != 1: raise Exception("trChar must be a string of length 1") 
-  
-  #find grid cols and rows
-  gridCols = len(max(arr, key=lambda x: len(x))) # <- as wide as longest sublist
-  
-  #iterate through data, find widest element for each column
-  #this + hPadding*2 will be the width of the entire column
-  columnWidths = []
-  for i in range(gridCols):
-    column = ([el[i] for el in arr if i < len(el)]) #get column
+    #if empty 2d array - return a box shape
+    if len(arr) == 1 and len(arr[0]) == 0:
+        return "Empty Table"
 
-    #get max width of element in each column
-    maxColumnElemWidth = len(str(max(column, key=lambda x: len(str(x)))))
-    columnWidths.append(maxColumnElemWidth) #append to list by column index
+    #check that variables are usable and of correct format
+    if not isinstance(titleRow, bool): raise Exception("titleRow must be either true or false")
+    if len(arr) == 0: raise Exception("List cannot be empty")
+    if not isinstance(hPadding, int): raise Exception("hPadding must be a positive integer!")
+    if hPadding < 0: raise Exception("hPadding must be a positive integer")
+    if not isinstance(cChar, str): raise Exception("cChar must be a string!")
+    if not isinstance(hChar, str): raise Exception("hChar must be a string!")
+    if not isinstance(vChar, str): raise Exception("vChar must be a string!")
+    if not isinstance(trChar, str): raise Exception("trChar must be a string!")
+    if len(cChar) != 1: raise Exception("cChar must be a string of length 1")
+    if len(hChar) != 1: raise Exception("hChar must be a string of length 1")
+    if len(vChar) != 1: raise Exception("vChar must be a string of length 1") 
+    if len(trChar) != 1: raise Exception("trChar must be a string of length 1") 
+    
+    #find grid cols and rows
+    gridCols = len(max(arr, key=lambda x: len(x))) # <- as wide as longest sublist
+    gridRows = len(arr) # <- ampunt of rows
+    
+    #iterate through data, find widest element for each column
+    #this + hPadding*2 will be the width of the entire column
+    columnWidths = []
+    for i in range(gridCols):
+        column = ([el[i] for el in arr if i < len(el)]) #get column
 
-  #if using a title row, define it
-  if titleRow:
-    titleSeperator = "\n"
+        #get max width of element in each column
+        maxWidthElem = ""
+        for elem in column:
+            sep = str(elem).split("\n")
+            for s in sep:
+                if len(s) > len(maxWidthElem):
+                    maxWidthElem = s
+
+        columnWidths.append(len(maxWidthElem)) #append to list by column index
+
+    #max row heights for each row
+    rowHeights = []
+    for row in arr:
+        maxRowElemHeight = str(max(row, key=lambda x: str(x).count("\n")+1)).count("\n") + 1 # height of each row in amount of \n + 1
+        rowHeights.append(maxRowElemHeight)
+
+    #if using a title row, define title seperator
+    if titleRow:
+        titleSeperator = "\n"
+        for width in columnWidths:
+            titleSeperator += cChar + trChar * (width+hPadding * 2)
+        titleSeperator += cChar
+
+    #construct grid seperator with grid widths found
+    gridSeperator = "\n"
     for width in columnWidths:
-      titleSeperator += cChar + trChar * (width+hPadding * 2)
-    titleSeperator += cChar
+        gridSeperator += cChar + hChar * (width+hPadding * 2)
+    gridSeperator += cChar
 
-  #construct grid seperator with grid widths found
-  gridSeperator = "\n"
-  for width in columnWidths:
-    gridSeperator += cChar + hChar * (width+hPadding * 2)
-  gridSeperator += cChar
+    constructedString = ""
 
-  constructedString = ""
+    #print grid with new column widths
+    for row, i in enumerate(arr):
+        rowHeight = rowHeights[row]
+        if row == 1 and titleRow:
+            constructedString += titleSeperator
+        else:
+            constructedString += gridSeperator
+        for h in range(rowHeight):
+            constructedString += "\n"
+            for col in range(gridCols):
+                colWidth = columnWidths[col] + hPadding * 2
+                try:
+                    raw_elem = arr[row][col]
+                    if raw_elem == None:
+                        constructedString += vChar + " " * colWidth
+                    else:
+                        split = str(raw_elem).split("\n")
+                        centered_elem = str(split[h]).center(colWidth, " ")   
+                        constructedString += "|" + centered_elem
+                except IndexError:
+                    constructedString += vChar + " " * colWidth
 
-  #print grid with new column widths
-  for row, i in enumerate(arr):
-    if row == 1 and titleRow:
-      constructedString += titleSeperator + "\n"
-    else:
-      constructedString += gridSeperator + "\n"
-    for col in range(gridCols):
-      colWidth = columnWidths[col] + hPadding * 2
-      try:
-        elem = arr[row][col]
-        elem = str(elem).center(colWidth, " ")
-      except IndexError:
-        elem = " " * colWidth
-      constructedString += vChar + str(elem)
-    constructedString += vChar
-  constructedString += gridSeperator
+                #if last column, add last vChar
+                if col == gridCols - 1:
+                            constructedString += vChar    
+    constructedString += gridSeperator
 
-  return constructedString
+    return constructedString
 
 class Table():
   """
@@ -82,10 +110,16 @@ class Table():
   headers - the headers for each table section\n
   rows - optional - add rows from intialisation\n
   """
-  def __init__(self, headers:list, rows=None):
-    if not isinstance(headers, list): raise Exception("Headers must be a list!")
-    if len(headers) == 0: raise Exception("Headers list cannot be empty")
-    if len(set(headers)) != len(headers): raise Exception("Headers must not contain duplicates!")
+  def __init__(self, headers:list=None, rows=None):
+    if headers !=None:
+      if not isinstance(headers, list): raise Exception("Headers must be a list!")
+    #if len(headers) == 0: raise Exception("Headers list cannot be empty")
+      if len(set(headers)) != len(headers): raise Exception("Headers must not contain duplicates!")
+
+    #headers will be blank if not provided
+    if headers == None:
+      headers = []
+
     self._headers = headers
 
     #if rows supplied, add to begin with else make it blank
@@ -272,13 +306,13 @@ class Table():
     return pstdev([float(x) for x in self.getHeader(header, excludeNone=True) if x != None]) #converts all to floats if not none
 
   def percentile(self, header, percentile:float) -> float:
-    if percentile < 0 or percentile > 100: raise Exception("Percentile must be > 0 and < 100!")
     """
     Get nth percentile of a header's data\n
     header - name of header to get data from\n
     percentile - nth percentile - float in range(0, 100)\n
     returns float\n
     """
+    if percentile < 0 or percentile > 100: raise Exception("Percentile must be > 0 and < 100!")
 
     data = sorted([float(x) for x in self.getHeader(header, excludeNone=True) if x != None])
 
@@ -373,14 +407,3 @@ def tableToCSV(filePath:str, table:Table, titleRow:bool = True, delimiter:str=",
     for row in table._rows:
       elems = [row[header] for header in table._headers]
       writer.writerow(elems)
-
-if __name__ == "__main__":
-  import random
-  import string
-
-  table = Table(headers=["Name", "Score"])
-
-  for i in range(100):
-    table.addRow({"Name": ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(8)), "Score": random.randint(0, 100)})
-
-  tableToCSV("output.csv", table)
