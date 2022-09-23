@@ -361,6 +361,7 @@ def tableFromCSV(filePath:str, titleRow:bool=True, delimiter:str=",", quotechar:
     start = 0
     if titleRow:
       table = Table(headers=rows[0])
+      start = 1
 
     else:
       table = Table(headers=[x for x in range(0, len(longestRow))])
@@ -407,3 +408,6 @@ def tableToCSV(filePath:str, table:Table, titleRow:bool = True, delimiter:str=",
     for row in table._rows:
       elems = [row[header] for header in table._headers]
       writer.writerow(elems)
+
+table = tableFromCSV("table.csv")
+print(table)
